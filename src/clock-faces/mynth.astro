@@ -1,0 +1,57 @@
+---
+// Fonts
+import "@fontsource/barlow/100.css";
+import "@fontsource/barlow/400.css";
+import "@fontsource/lato/100.css";
+import "@fontsource/lato/400.css";
+import "@fontsource-variable/open-sans";
+
+// Components
+import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
+
+import { Clock } from "@/components/clock/Clock";
+import { Date } from "@/components/clock/Date";
+---
+
+<>
+  <div class="fixed top-0 left-0 right-0 -z-50">
+    <BackgroundGradientAnimation
+      client:only
+      gradientBackgroundStart="rgb(0,0,0)"
+      gradientBackgroundEnd="rgb(11,34,24)"
+      firstColor="6, 54, 44"
+      secondColor="23, 81, 90"
+      thirdColor="28, 94, 79"
+      fourthColor="15, 90, 128"
+      fifthColor="3, 5, 66"
+    />
+  </div>
+
+  <main class="text-xl z-50 h-screen">
+    <div
+      class="h-screen grid grid-rows-3 grid-cols-1 items-center justify-center gap-10"
+    >
+      <div></div>
+      <div
+        class="lato text-[100px] text-zinc-100/50 font-thin flex items-center h-full justify-center"
+      >
+        <Clock client:only showSeconds={false} />
+      </div>
+      <div
+        class="lato text-[36px] text-zinc-300/40 font-light flex items-start h-full justify-center"
+      >
+        <Date format="D MMMM" client:only />
+      </div>
+    </div>
+  </main>
+</>
+
+<style>
+  .barlow {
+    font-family: "Barlow", sans-serif;
+  }
+
+  .lato {
+    font-family: "Lato", sans-serif;
+  }
+</style>

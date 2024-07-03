@@ -1,0 +1,94 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { clockFaces } from "../clock-faces";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Fullscreen,
+  GalleryVerticalEnd,
+  Info,
+} from "lucide-react";
+export function getStaticPaths() {
+  return Object.values(clockFaces).map(({ slug }) => ({
+    params: { clockFace: slug },
+  }));
+}
+
+const { clockFace } = Astro.params;
+
+const currentClockFace = clockFaces[clockFace];
+
+const CurrentClockFace = await import(`../clock-faces/${clockFace}.astro`);
+const DefaultClockFace = await import(`../clock-faces/mynth.astro`);
+---
+
+<Layout
+  title={`${currentClockFace.name} clock | by ${currentClockFace.author || "anonymous"}`}
+>
+  <div
+    id="nav"
+    class="fixed rounded-xl top-6 left-6 right-6 h-20 grid grid-cols-3 z-50 px-10 items-center hover:opacity-100 opacity-0 bg-zinc-400 bg-opacity-10 backdrop-blur-2xl transition-all duration-500"
+  >
+    <div class="flex justify-start items-center gap-6">
+      <button class="text-zinc-100/60">
+        <ArrowLeft size={18} />
+      </button>
+
+      <button class="text-zinc-100/60">
+        <GalleryVerticalEnd size={18} />
+      </button>
+
+      <button class="text-zinc-100/60">
+        <ArrowRight size={18} />
+      </button>
+    </div>
+
+    <!-- Current -->
+    <div class="text-zinc-100/60 flex justify-center items-center gap-2">
+      <span> {currentClockFace.name} clockface </span>
+      <button>
+        <Info size={18} />
+      </button>
+    </div>
+
+    <div class="flex justify-end items-center gap-6">
+      <button class="text-zinc-100/60" data-toggle-fullscreen>
+        <Fullscreen size={18} />
+      </button>
+    </div>
+  </div>
+
+  {
+    CurrentClockFace.default ? (
+      <CurrentClockFace.default />
+    ) : (
+      <DefaultClockFace.default />
+    )
+  }
+</Layout>
+
+<script>
+  import { toggleFullScreen } from "@/lib/window";
+
+  const buttons = document.querySelectorAll("[data-toggle-fullscreen]");
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => toggleFullScreen());
+  });
+
+  // On mouse movement show the nav, and after 3 seconds hide it
+  const nav = document.getElementById("nav");
+
+  let hideNavTimeout = 0;
+
+  document.addEventListener("mousemove", () => {
+    nav?.classList.add("opacity-100");
+    nav?.classList.remove("opacity-0");
+
+    clearTimeout(hideNavTimeout);
+    hideNavTimeout = setTimeout(() => {
+      nav?.classList.remove("opacity-100");
+      nav?.classList.add("opacity-0");
+    }, 3000);
+  });
+</script>
